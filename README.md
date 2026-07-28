@@ -1,2 +1,3 @@
 # bwqs-R
-R code for BWQS regression models for associations of chemical exposures and cardiometabolic outcomes. This code was used to produce the results in 
+R codes for BWQS regression models. 
+The codes were used to produce the results of the associations of chemical exposures and cardiometabolic outcomes, using the BWQS Regression modelling technique. 
