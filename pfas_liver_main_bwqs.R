@@ -8,11 +8,18 @@
 setwd("~/BWQS/")
 load("data_pfas_liver.Rdata")
 
-# Imputed dataset #1
+# This dataset includes the original and the imputed data
+# We have created 20 imputed datasets using the original data, so that the covariates have no missings
+# Thus, each participant ID is registered 21 times in the dataset
+# .imp is the variable indicating the imputation number, with values from 0 to 20
+# .imp equals 0 corresponds to the original (non-imputed) data
+# We will use imputed dataset #1, so .imp equals 1
 data1 <- subset(data_pfas_liver, .imp==1)
 
-# Datasets for sensitivity analysis among participants with prenatal PFAS 
-# Define the variables we want to check for NAs
+# We want to create new datasets for sensitivity analyses
+# Datasets for sensitivity analysis among participants with prenatal PFAS: 
+# We first define the variables we want to check for NAs (missings)
+# Then we create new dataset with complete exposure variable data using complete.cases
 # _m refers to prenatal PFAS, _c refers to childhood PFAS, _a refers to adolescent PFAS
 varsc <- c("log2_pfoa_m", "log2_pfna_m", "log2_pfhxs_m","log2_pfos_m",
           "log2_pfoa_c", "log2_pfna_c", "log2_pfhxs_c","log2_pfos_c", 
@@ -23,12 +30,12 @@ varsa <- c("log2_pfoa_m", "log2_pfna_m", "log2_pfhxs_m","log2_pfos_m",
            "log2_pfunda_a", "log2_pfda_a", "log2_pfhpa_a", "log2_x9clpfesa_a")
 data1a <- data1[complete.cases(data1[, varsa]), ]
 
-# BWQS package ####
+# Install/load BWQS package ####
 install.packages("remotes")
 remotes::install_github("ElenaColicino/bwqs")
 library(BWQS)
 
-# Define Mixtures ####
+# Define PFAS Mixtures ####
 premix <- c("log2_pfoa_m", "log2_pfna_m", "log2_pfhxs_m", "log2_pfos_m")
 childmix <- c("log2_pfoa_c", "log2_pfna_c", "log2_pfhxs_c", "log2_pfos_c", 
               "log2_pfunda_c")
