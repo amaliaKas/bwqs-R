@@ -17,7 +17,7 @@ load("data_pfas_liver.Rdata")
 data1 <- subset(data_pfas_liver, .imp==1)
 
 ##############################################
-# EFFECT MODIFICATION ####
+# EFFECT MODIFICATION MODEL ####
 ##############################################
 # Prepare data ####
 d <- as.data.frame(data1)
