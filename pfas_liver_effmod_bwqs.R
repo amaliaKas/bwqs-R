@@ -46,7 +46,6 @@ d$upf_2c <- as.numeric(ifelse(d$upf_2c == 1, 0, 1)) #low/mid are 0, high are 1
 d$pgs0027_2c <- as.numeric(ifelse(d$pgs0027_2c == 1, 0, 1)) #low/mid are 0, high are 1
 d$pgs2071_2c <- as.numeric(ifelse(d$pgs2071_2c == 1, 0, 1)) #low/mid are 0, high are 1
 d$alt <- as.numeric(d$alt)
-d$hs2_masld_2c <- as.numeric(d$masld_2c) #low risk are 0, high risk ("cases") are 1
 
 ##############################################
 # MODEL ####
