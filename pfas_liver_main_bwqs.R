@@ -60,6 +60,22 @@ adolmix2 <- c("log2_pfoa_a", "log2_pfna_a", "log2_pfhxs_a","log2_pfos_a",
 # maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
 # breastfeeding, fish consumption in adolescence, adolescent age at measurement, inverse probability weights
 
+# BWQS model formula is: 
+# bwqs(outcome ~ covariate1 + covariate2 + covariateX, 
+#      mix_name = c("exposure1", "exposure2", "exposureX"), 
+#      data = dataset,
+#      q = 4, (quartiles, tertiles, etc)
+#      c_int = c(0.025, 0.975), (credible intervals)
+#      family = "gaussian", (for continuous outcome or "binomial" for binary outcome)
+#      seed = 1234 (set seed)
+#      )
+# Full information at https://rdrr.io/github/ElenaColicino/bwqs/man/bwqs.html
+
+# Afterwards we want to get the summary statistics (model output)
+# summary_fit contains the statistics of the parameters: mean, standard error of the mean, standard deviation, 
+# lower and upper values for the credible interval (with credible level specified by c_int), n_eff and Rhat
+# We save the table as Rdata file with save() or/and as an Excel file with write.xlsx()
+
 # 1. ALT ####
 
 # Prenatal
@@ -67,7 +83,7 @@ bwqs.alt.1m <- bwqs(alt ~ cohort + sex + mbmi + mage + medu + parity + msmok + a
                       native + fishpreg_tert,
                     mix_name = premix,
                     data = data1, q=4, c_int = c(0.025, 0.975), family = "gaussian", seed = 1234)
-## model output 
+## model output
 bwqs.alt.1m_fit <- bwqs.alt.1m$summary_fit
 save(bwqs.alt.1m_fit, file = "main/bwqs.alt.1m.Rdata")
 write.xlsx(bwqs.alt.1m_fit, "main/bwqs.alt.1m.xlsx")
