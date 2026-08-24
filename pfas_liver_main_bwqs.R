@@ -42,8 +42,24 @@ childmix <- c("log2_pfoa_c", "log2_pfna_c", "log2_pfhxs_c", "log2_pfos_c",
 adolmix1 <- c("log2_pfoa_a", "log2_pfna_a", "log2_pfhxs_a","log2_pfos_a")
 adolmix2 <- c("log2_pfoa_a", "log2_pfna_a", "log2_pfhxs_a","log2_pfos_a",
               "log2_pfunda_a", "log2_pfda_a", "log2_pfhpa_a", "log2_x9clpfesa_a")
+
 ##############################################
 # MAIN MODEL ####
+
+# We will use different covariates in each model:
+#1
+# Prenatal exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
+# maternal age, maternal education, parity, maternal smoking exposure, parents native from the country, 
+# fish consumption in pregnancy, adolescent age at measurement, inverse probability weights
+#2
+# Childhood exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
+# maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
+# breastfeeding, fish consumption in childhood, adolescent age at measurement, inverse probability weights
+#3
+# Adolescent exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
+# maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
+# breastfeeding, fish consumption in adolescence, adolescent age at measurement, inverse probability weights
+
 # 1. ALT ####
 
 # Prenatal
