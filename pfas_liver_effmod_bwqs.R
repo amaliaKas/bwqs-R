@@ -24,16 +24,16 @@ d <- as.data.frame(data1)
 
 # We will use different covariates in each model:
 #1
-# Prenatal exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
-# maternal age, maternal education, parity, maternal smoking exposure, parents native from the country, 
+# Prenatal exposure model includes the covariates: cohort, adolescent sex (not when studying effect modification by sex), 
+# maternal prepregnancy BMI, maternal age, maternal education, parity, maternal smoking exposure, parents native from the country, 
 # fish consumption in pregnancy, adolescent age at measurement, inverse probability weights
 #2
-# Childhood exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
-# maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
+# Childhood exposure model includes the covariates: cohort, adolescent sex (not when studying effect modification by sex), 
+# maternal prepregnancy BMI, maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
 # breastfeeding, fish consumption in childhood, adolescent age at measurement, inverse probability weights
 #3
-# Adolescent exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
-# maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
+# Adolescent exposure model includes the covariates: cohort, adolescent sex (not when studying effect modification by sex), 
+# maternal prepregnancy BMI, maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
 # breastfeeding, fish consumption in adolescence, adolescent age at measurement, inverse probability weights
 
 # Effect modification variables are binary in the original dataset: sex is either "male", or "female", whereas
@@ -244,11 +244,13 @@ write.xlsx(sum_fit_lasso, "eff-mod/bwqs.alt.sex.1c.xlsx")
 
 # ADOLESCENCE 1 ####
 
+# First, we create the dataset containing only the variables used in the specific model
 data <- d[,c('log2_pfhxs_a','log2_pfna_a','log2_pfoa_a','log2_pfos_a',
              'cohort', 'sex', 'mbmi','mage','medu','parity','msmok','adolage', 'ipw',
              'bw', 'bf', 'fishadol_tert', 'ethn2c',
              "alt")]
 
+# We want complete cases
 data <- na.omit(data)
 
 q = 4  # number of quantiles
@@ -267,8 +269,7 @@ mix_name_3 <- c('log2_pfhxs_a','log2_pfna_a','log2_pfoa_a','log2_pfos_a')
 
 X3 = BWQS::quantile_split(data=data, mix_name=mix_name_3, q)[,mix_name_3]
 
-# run the fit_lasso model
-
+# Run the fit_lasso model
 data_reg <- list(
   
   N   = nrow(data),
@@ -311,6 +312,7 @@ write.xlsx(sum_fit_lasso, "eff-mod/bwqs.alt.sex.1a.1.xlsx")
 
 # ADOLESCENCE 2 ####
 
+# First, we create the dataset containing only the variables used in the specific model
 data <- d[,c('log2_pfhxs_a','log2_pfna_a','log2_pfoa_a','log2_pfos_a',
              'log2_pfunda_a', 'log2_pfhpa_a', 'log2_pfda_a', 'log2_x9clpfesa_a',
              'cohort', 'sex', 'mbmi','mage','medu','parity','msmok','adolage', 'ipw',
@@ -321,7 +323,7 @@ data <- na.omit(data)
 
 q = 4  # number of quantiles
 
-# Change here
+# Change covariates here
 formula = as.formula(alt ~ # write only the name of the covariates
                        cohort + mbmi + mage + medu + parity + msmok + adolage + ipw +
                        bw + bf + fishadol_tert + ethn2c)
@@ -336,8 +338,7 @@ mix_name_4 <- c('log2_pfhxs_a','log2_pfna_a','log2_pfoa_a','log2_pfos_a',
 
 X4 = BWQS::quantile_split(data=data, mix_name=mix_name_4, q)[,mix_name_4]
 
-# run the fit_lasso model
-
+# Run the fit_lasso model
 data_reg <- list(
   
   N   = nrow(data),
