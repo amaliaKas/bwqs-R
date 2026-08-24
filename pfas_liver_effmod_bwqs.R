@@ -8,7 +8,12 @@
 setwd("~/BWQS/")
 load("data_pfas_liver.Rdata")
 
-# Imputed dataset #1
+# This dataset includes the original and the imputed data
+# We have created 20 imputed datasets using the original data, so that the covariates have no missings
+# Thus, each participant ID is registered 21 times in the dataset
+# .imp is the variable indicating the imputation number, with values from 0 to 20
+# .imp equals 0 corresponds to the original (non-imputed) data
+# We will use imputed dataset #1, so .imp equals 1
 data1 <- subset(data_pfas_liver, .imp==1)
 
 ##############################################
@@ -16,6 +21,25 @@ data1 <- subset(data_pfas_liver, .imp==1)
 ##############################################
 # Prepare data ####
 d <- as.data.frame(data1)
+
+# We will use different covariates in each model:
+#1
+# Prenatal exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
+# maternal age, maternal education, parity, maternal smoking exposure, parents native from the country, 
+# fish consumption in pregnancy, adolescent age at measurement, inverse probability weights
+#2
+# Childhood exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
+# maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
+# breastfeeding, fish consumption in childhood, adolescent age at measurement, inverse probability weights
+#3
+# Adolescent exposure model includes the covariates: cohort, adolescent sex, maternal prepregnancy BMI, 
+# maternal age, maternal education, parity, maternal smoking exposure, child ethnic origin, birth weight,
+# breastfeeding, fish consumption in adolescence, adolescent age at measurement, inverse probability weights
+
+# Effect modification variables are binary in the original dataset: sex is either "male", or "female", whereas
+# UPF intake and polygenic risk scores are either "1" corresponding to low//mid, or "2" corresponding to high
+# For the effect modification analysis, all outcome and effect modifiers should be numeric variables,
+# with baseline group as 0, compared to group 1
 
 d$sex <- as.numeric(ifelse(d$sex == "male", 1, 0)) #females are 0, males are 1
 d$upf_2c <- as.numeric(ifelse(d$upf_2c == 1, 0, 1)) #low/mid are 0, high are 1
@@ -27,7 +51,7 @@ d$hs2_masld_2c <- as.numeric(d$masld_2c) #low risk are 0, high risk ("cases") ar
 ##############################################
 # MODEL ####
 
-
+# Load the libraries
 library('rstan')
 library('ggplot2')
 library('BWQS')
@@ -35,6 +59,7 @@ library('mvtnorm')
 library('tidyverse')
 library('DT')
 
+# Create the model for effect modification analysis
 model_bwqs_gaussian_group_lasso <- "data {
 
 int<lower=0> N;              // Sample size
@@ -87,11 +112,13 @@ m_lasso <- rstan::stan_model(model_code =  model_bwqs_gaussian_group_lasso)
 # 1. SEX ####
 # PRENATAL ####
 
+# First, we create the dataset containing only the variables used in the specific model
 data <- d[,c('log2_pfhxs_m','log2_pfna_m','log2_pfoa_m','log2_pfos_m',
              'cohort', 'sex', 'mbmi','mage','medu','parity','msmok','adolage', 'ipw',
              'native','fishpreg_tert',
              "alt")]
 
+# We want complete cases
 data <- na.omit(data)
 
 q = 4  # number of quantiles
@@ -104,14 +131,13 @@ formula = as.formula(alt ~ # write only the name of the covariates
 y_name  <- all.vars(formula)[1]
 KV_name <- all.vars(formula)[-1]
 
-interaction.name <- "sex"
+interaction.name <- "sex"  # effect modifier variable
 
 mix_name_1 <- c('log2_pfhxs_m','log2_pfna_m','log2_pfoa_m','log2_pfos_m')
 
 X1 = BWQS::quantile_split(data=data, mix_name=mix_name_1, q)[,mix_name_1]
 
-# run the fit_lasso model
-
+# Run the fit_lasso model, i.e. BWQS model for effect modification
 data_reg <- list(
   
   N   = nrow(data),
@@ -151,11 +177,13 @@ write.xlsx(sum_fit_lasso, "eff-mod/bwqs.alt.sex.1m.xlsx")
 
 # CHILDHOOD ####
 
+# First, we create the dataset containing only the variables used in the specific model
 data <- d[,c('log2_pfhxs_c','log2_pfna_c','log2_pfoa_c','log2_pfos_c', 'log2_pfunda_c',
              'cohort', 'sex', 'mbmi','mage','medu','parity','msmok','adolage', 'ipw',
              'bw', 'bf', 'fishchild_tert', 'ethn2c',
              "alt")]
 
+# We want complete cases
 data <- na.omit(data)
 
 q = 4  # number of quantiles
@@ -174,8 +202,7 @@ mix_name_2 <- c('log2_pfhxs_c','log2_pfna_c','log2_pfoa_c','log2_pfos_c', 'log2_
 
 X2 = BWQS::quantile_split(data=data, mix_name=mix_name_2, q)[,mix_name_2]
 
-# run the fit_lasso model
-
+# Run the fit_lasso model
 data_reg <- list(
   
   N   = nrow(data),
