@@ -128,10 +128,10 @@ formula = as.formula(alt ~ # write only the name of the covariates
                        cohort + mbmi + mage + medu + parity + msmok + adolage + ipw +
                        native + fishpreg_tert)
 
-y_name  <- all.vars(formula)[1]
-KV_name <- all.vars(formula)[-1]
+y_name  <- all.vars(formula)[1]    #outcome
+KV_name <- all.vars(formula)[-1]   #covariates
 
-interaction.name <- "sex"  # effect modifier variable
+interaction.name <- "sex"          #effect modifier
 
 mix_name_1 <- c('log2_pfhxs_m','log2_pfna_m','log2_pfoa_m','log2_pfos_m')
 
